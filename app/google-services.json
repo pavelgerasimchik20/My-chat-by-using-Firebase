@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "220805641983",
+    "project_id": "chat-3ac96",
+    "storage_bucket": "chat-3ac96.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220805641983:android:6b6cf9045a7bb319c8feca",
+        "android_client_info": {
+          "package_name": "com.geras.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "220805641983-qa6rmuae2am99nhgoduci02acjh681m0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.geras.chat",
+            "certificate_hash": "725b53c7f9afc28c9a55032c73884489961f5eab"
+          }
+        },
+        {
+          "client_id": "220805641983-v91ocjq7vumq3fapk3hmsq9o1b319pl2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzX5vv7frVAM1q4odpLDqQrBE4JWfBxDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "220805641983-v91ocjq7vumq3fapk3hmsq9o1b319pl2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
