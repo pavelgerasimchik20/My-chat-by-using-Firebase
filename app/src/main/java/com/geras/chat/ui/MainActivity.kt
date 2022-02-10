@@ -1,9 +1,14 @@
 package com.geras.chat.ui
 
 import android.content.Intent
+import android.graphics.drawable.GradientDrawable
+import android.icu.lang.UCharacter
 import android.os.Bundle
+import android.text.Layout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.auth.AuthUI
 import com.geras.chat.data.MessageDTO
 import com.geras.chat.databinding.ActivityMainBinding
@@ -34,10 +39,18 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         MobileAds.initialize(this) {}
+        //user hasn't authorized
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            startActivityForResult(
+                AuthUI.getInstance().createSignInIntentBuilder().build(),
+                SIGN_IN_CODE
+            )
+        } else {
+            Snackbar.make(binding.activityMain, "You`re authorized", Snackbar.LENGTH_SHORT).show()
+        }
 
         val editText = binding.messageField
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         database =
             Firebase.database("https://chat-3ac96-default-rtdb.europe-west1.firebasedatabase.app").reference
@@ -54,15 +67,6 @@ class MainActivity : AppCompatActivity() {
         }
         database.addValueEventListener(postListener)
 
-        //user hasn't authorized
-        if (FirebaseAuth.getInstance().currentUser == null) {
-            startActivityForResult(
-                AuthUI.getInstance().createSignInIntentBuilder().build(),
-                SIGN_IN_CODE
-            )
-        } else {
-            Snackbar.make(binding.activityMain, "You`re authorized", Snackbar.LENGTH_SHORT).show()
-        }
         binding.btnSend.setOnClickListener {
             if (editText.text.isNullOrEmpty()) {
                 Snackbar.make(binding.activityMain, "Enter the message", Snackbar.LENGTH_LONG)
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                     MessageDTO(
                         userName = FirebaseAuth.getInstance().currentUser?.email,
                         textMessage = editText.text.toString(),
-                        messageTime = SimpleDateFormat("hh-mm-ss  dd:MM:yyyy", Locale.getDefault()).format(Date().time)
+                        messageTime = SimpleDateFormat("HH:mm:ss  dd.MM.yyyy", Locale.getDefault()).format(Date().time)
                     )
                 )
                 editText.setText("")
