@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.geras.chat.R
-import com.geras.chat.data.MessageDTO
 import com.geras.chat.domain.model.Message
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MessageAdapter :
     RecyclerView.Adapter<MessageViewHolder>() {
@@ -43,7 +44,8 @@ class MessageViewHolder(item: View) :
 
     fun bind(message: Message) {
         userName.text = message.userName
-        messageTime.text = message.messageTime.toString()
+        messageTime.text =
+            SimpleDateFormat("HH:mm:ss  dd.MM.yyyy", Locale.getDefault()).format(message.messageTime)
         messageText.text = message.textMessage
     }
 }

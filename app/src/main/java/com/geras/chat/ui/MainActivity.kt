@@ -1,14 +1,8 @@
 package com.geras.chat.ui
 
 import android.content.Intent
-import android.graphics.drawable.GradientDrawable
-import android.icu.lang.UCharacter
 import android.os.Bundle
-import android.text.Layout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.size
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.auth.AuthUI
 import com.geras.chat.data.MessageDTO
 import com.geras.chat.data.toEntity
@@ -23,9 +17,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val message = dataSnapshot.getValue<HashMap<String,MessageDTO>>()
+                val message = dataSnapshot.getValue<HashMap<String, MessageDTO>>()
                 message?.let { it ->
                     val listMessages = it.values.toList().mapNotNull {
                         it.toEntity()
@@ -66,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                     adapter.updateMessages(listMessages)
                 }
             }
+
             override fun onCancelled(databaseError: DatabaseError) {}
         }
         database.addValueEventListener(postListener)
@@ -80,7 +73,6 @@ class MainActivity : AppCompatActivity() {
                     MessageDTO(
                         userName = FirebaseAuth.getInstance().currentUser?.email,
                         textMessage = editText.text.toString(),
-                        //messageTime = SimpleDateFormat("HH:mm:ss  dd.MM.yyyy", Locale.getDefault()).format(Date().time)
                         messageTime = Date().time
                     )
                 )
