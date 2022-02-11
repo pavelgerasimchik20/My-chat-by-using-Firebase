@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.auth.AuthUI
 import com.geras.chat.data.MessageDTO
+import com.geras.chat.data.toEntity
 import com.geras.chat.databinding.ActivityMainBinding
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
@@ -45,8 +46,6 @@ class MainActivity : AppCompatActivity() {
                 AuthUI.getInstance().createSignInIntentBuilder().build(),
                 SIGN_IN_CODE
             )
-        } else {
-            Snackbar.make(binding.activityMain, "You`re authorized", Snackbar.LENGTH_SHORT).show()
         }
 
         val editText = binding.messageField
@@ -58,11 +57,13 @@ class MainActivity : AppCompatActivity() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val message = dataSnapshot.getValue<HashMap<String,MessageDTO>>()
-                message?.let {
-                adapter.updateMessages(it.values.toList())
+                message?.let { it ->
+                    val listMessages = it.values.toList().mapNotNull {
+                        it.toEntity()
+                    }
+                    adapter.updateMessages(listMessages)
                 }
             }
-
             override fun onCancelled(databaseError: DatabaseError) {}
         }
         database.addValueEventListener(postListener)
@@ -77,7 +78,8 @@ class MainActivity : AppCompatActivity() {
                     MessageDTO(
                         userName = FirebaseAuth.getInstance().currentUser?.email,
                         textMessage = editText.text.toString(),
-                        messageTime = SimpleDateFormat("HH:mm:ss  dd.MM.yyyy", Locale.getDefault()).format(Date().time)
+                        //messageTime = SimpleDateFormat("HH:mm:ss  dd.MM.yyyy", Locale.getDefault()).format(Date().time)
+                        messageTime = Date().time
                     )
                 )
                 editText.setText("")
