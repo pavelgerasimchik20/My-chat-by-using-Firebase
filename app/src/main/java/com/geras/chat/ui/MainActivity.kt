@@ -60,6 +60,8 @@ class MainActivity : AppCompatActivity() {
                 message?.let { it ->
                     val listMessages = it.values.toList().mapNotNull {
                         it.toEntity()
+                    }.sortedBy {
+                        it.messageTime
                     }
                     adapter.updateMessages(listMessages)
                 }
