@@ -1,6 +1,8 @@
 package com.geras.chat.ui
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Color.*
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
@@ -65,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnSend.setOnClickListener {
             if (editText.text.isNullOrEmpty()) {
-                Snackbar.make(binding.activityMain, "Enter the message", Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.activityMain, "Enter the message", Snackbar.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             } else {
@@ -77,6 +79,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
                 editText.setText("")
+                binding.recyclerView.scrollToPosition(adapter.messages.size)
             }
         }
     }
@@ -85,10 +88,10 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SIGN_IN_CODE) {
             if (resultCode == RESULT_OK) {
-                Snackbar.make(binding.activityMain, "You`re authorized", Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.activityMain, "You`re authorized", Snackbar.LENGTH_SHORT)
                     .show()
             } else {
-                Snackbar.make(binding.activityMain, "You`re not authorized", Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.activityMain, "You`re not authorized", Snackbar.LENGTH_SHORT)
                     .show()
                 finish()
             }
