@@ -1,10 +1,9 @@
 package com.geras.chat.ui
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Color.*
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.firebase.ui.auth.AuthUI
 import com.geras.chat.data.MessageDTO
 import com.geras.chat.data.toEntity
@@ -33,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         MobileAds.initialize(this) {}
         //user hasn't authorized
         if (FirebaseAuth.getInstance().currentUser == null) {
@@ -47,9 +47,10 @@ class MainActivity : AppCompatActivity() {
 
         database =
             Firebase.database("https://chat-3ac96-default-rtdb.europe-west1.firebasedatabase.app").reference
-
+        //binding.progressBar.isVisible = true
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                binding.progressBar.isVisible = true
                 val message = dataSnapshot.getValue<HashMap<String, MessageDTO>>()
                 message?.let { it ->
                     val listMessages = it.values.toList().mapNotNull {
@@ -58,6 +59,7 @@ class MainActivity : AppCompatActivity() {
                         it.messageTime
                     }
                     adapter.updateMessages(listMessages)
+                    binding.progressBar.isVisible = false
                 }
             }
 
