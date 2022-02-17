@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
                 editText.setText("")
-                binding.recyclerView.scrollToPosition(adapter.messages.size)
+                binding.recyclerView.smoothScrollToPosition(adapter.messages.size)
             }
         }
     }
