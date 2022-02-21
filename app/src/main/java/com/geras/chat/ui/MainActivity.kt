@@ -1,10 +1,17 @@
 package com.geras.chat.ui
 
+import android.app.Notification
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.firebase.ui.auth.AuthUI
+import com.geras.chat.R
 import com.geras.chat.data.MessageDTO
 import com.geras.chat.data.toEntity
 import com.geras.chat.databinding.ActivityMainBinding
@@ -28,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private val adapter = MessageAdapter()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -47,10 +55,11 @@ class MainActivity : AppCompatActivity() {
 
         database =
             Firebase.database("https://chat-3ac96-default-rtdb.europe-west1.firebasedatabase.app").reference
-        //binding.progressBar.isVisible = true
+        binding.progressBar.isVisible = true
+
         val postListener = object : ValueEventListener {
+
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                binding.progressBar.isVisible = true
                 val message = dataSnapshot.getValue<HashMap<String, MessageDTO>>()
                 message?.let { it ->
                     val listMessages = it.values.toList().mapNotNull {
@@ -80,10 +89,29 @@ class MainActivity : AppCompatActivity() {
                         messageTime = Date().time
                     )
                 )
+                createNotification(editText.text)
                 editText.setText("")
                 binding.recyclerView.smoothScrollToPosition(adapter.messages.size)
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotification(message: CharSequence) {
+        val notification =
+            Notification.Builder(this, "id")
+                .setAutoCancel(true)
+                .setColor(Color.YELLOW)
+                .setSmallIcon(R.drawable.ic_baseline_chat_bubble_24)
+                .setContentTitle("New message")
+                .setContentText(message)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setTimeoutAfter(1500)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .build()
+        val manager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(1,notification)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
