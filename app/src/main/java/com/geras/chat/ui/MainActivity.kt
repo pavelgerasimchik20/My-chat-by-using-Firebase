@@ -16,6 +16,7 @@ import com.geras.chat.R
 import com.geras.chat.data.MessageDTO
 import com.geras.chat.data.toEntity
 import com.geras.chat.databinding.ActivityMainBinding
+import com.geras.chat.ui.notification.NotificationController
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -40,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val manager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         MobileAds.initialize(this) {}
         //user hasn't authorized
@@ -90,40 +93,11 @@ class MainActivity : AppCompatActivity() {
                         messageTime = Date().time
                     )
                 )
-                createNotification(editText.text)
+                NotificationController.createNotification(this, manager, editText.text)
                 editText.setText("")
                 binding.recyclerView.smoothScrollToPosition(adapter.messages.size)
             }
         }
-    }
-
-    private fun createNotification(message: CharSequence) {
-        val manager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channel: NotificationChannel
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel = NotificationChannel(
-                "my_id",
-                "Notification custom channel",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            channel.description = "this channel provides the space to notifications"
-            manager.createNotificationChannel(channel)
-        }
-
-        val notification =
-            NotificationCompat.Builder(this, "my_id")
-                .setAutoCancel(true)
-                .setColor(Color.YELLOW)
-                .setSmallIcon(R.drawable.ic_baseline_chat_bubble_24)
-                .setContentTitle("New message")
-                .setContentText(message)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .build()
-
-        manager.notify(1, notification)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
