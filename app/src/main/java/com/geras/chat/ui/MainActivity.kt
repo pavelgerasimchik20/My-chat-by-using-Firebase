@@ -1,14 +1,17 @@
 package com.geras.chat.ui
 
+import android.annotation.SuppressLint
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import com.firebase.ui.auth.AuthUI
 import com.geras.chat.R
@@ -35,7 +38,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private val adapter = MessageAdapter()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -96,10 +98,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotification(message: CharSequence) {
+        val manager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channel: NotificationChannel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            channel = NotificationChannel(
+                "my_id",
+                "channel`s name",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            channel.description = "this channel provides the space to notifications"
+            manager.createNotificationChannel(channel)
+        }
+
         val notification =
-            Notification.Builder(this, "id")
+            NotificationCompat.Builder(this, "my_id")
                 .setAutoCancel(true)
                 .setColor(Color.YELLOW)
                 .setSmallIcon(R.drawable.ic_baseline_chat_bubble_24)
@@ -109,9 +123,8 @@ class MainActivity : AppCompatActivity() {
                 .setTimeoutAfter(1500)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .build()
-        val manager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(1,notification)
+
+        manager.notify(1, notification)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
