@@ -1,6 +1,5 @@
 package com.geras.chat.ui
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import com.firebase.ui.auth.AuthUI
 import com.geras.chat.R
@@ -71,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     adapter.updateMessages(listMessages)
                     binding.progressBar.isVisible = false
+                    binding.recyclerView.smoothScrollToPosition(adapter.messages.size)
                 }
             }
 
@@ -105,8 +104,8 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             channel = NotificationChannel(
                 "my_id",
-                "channel`s name",
-                NotificationManager.IMPORTANCE_DEFAULT
+                "Notification custom channel",
+                NotificationManager.IMPORTANCE_HIGH
             )
             channel.description = "this channel provides the space to notifications"
             manager.createNotificationChannel(channel)
@@ -120,8 +119,8 @@ class MainActivity : AppCompatActivity() {
                 .setContentTitle("New message")
                 .setContentText(message)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setTimeoutAfter(1500)
-                .setPriority(Notification.PRIORITY_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_SOUND)
                 .build()
 
         manager.notify(1, notification)

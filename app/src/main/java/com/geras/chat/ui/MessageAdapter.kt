@@ -45,7 +45,10 @@ class MessageViewHolder(item: View) :
     fun bind(message: Message) {
         userName.text = message.userName
         messageTime.text =
-            SimpleDateFormat("HH:mm:ss  dd.MM.yyyy", Locale.getDefault()).format(message.messageTime)
+            SimpleDateFormat(
+                "HH:mm:ss  dd.MM.yyyy",
+                Locale.getDefault()
+            ).format(message.messageTime)
         messageText.text = message.textMessage
     }
 }
