@@ -7,6 +7,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.geras.chat.data.DBManager
 import com.geras.chat.databinding.ActivityMainBinding
 import com.geras.chat.ui.notification.NotificationController
@@ -22,6 +24,12 @@ class MainActivity : AppCompatActivity() {
     private val databaseManager = DBManager()
     private val adapter = MessageAdapter()
 
+    private val signInLauncher = registerForActivityResult(
+        FirebaseAuthUIActivityResultContract()
+    ) { res ->
+        this.onSignInResult(res)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -30,13 +38,23 @@ class MainActivity : AppCompatActivity() {
         val manager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.PhoneBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.GitHubBuilder().build(),
+            AuthUI.IdpConfig.AnonymousBuilder().build()
+        )
+
+        val signInIntent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .build()
+
         MobileAds.initialize(this) {}
         //user hasn't authorized
         if (FirebaseAuth.getInstance().currentUser == null) {
-            startActivityForResult(
-                AuthUI.getInstance().createSignInIntentBuilder().build(),
-                1
-            )
+            signInLauncher.launch(signInIntent)
         }
 
         val editText = binding.messageField
@@ -64,17 +82,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                Snackbar.make(binding.activityMain, "You`re authorized", Snackbar.LENGTH_SHORT)
-                    .show()
-            } else {
-                Snackbar.make(binding.activityMain, "You`re not authorized", Snackbar.LENGTH_SHORT)
-                    .show()
-                finish()
-            }
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+        if (result.resultCode == RESULT_OK) {
+            Snackbar.make(binding.activityMain, "You`re authorized", Snackbar.LENGTH_SHORT)
+                .show()
+        } else {
+            Snackbar.make(binding.activityMain, "You`re not authorized", Snackbar.LENGTH_SHORT)
+                .show()
+            finish()
         }
     }
 }
