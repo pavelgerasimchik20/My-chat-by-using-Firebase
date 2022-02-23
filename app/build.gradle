@@ -48,13 +48,14 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:8.0.0'
     implementation 'com.firebaseui:firebase-ui-firestore:8.0.0'
     implementation 'com.firebaseui:firebase-ui-database:8.0.0'
-    implementation platform('com.google.firebase:firebase-bom:29.0.4')
+    implementation platform('com.google.firebase:firebase-bom:29.1.0')
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.1'
     implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
     implementation 'com.google.firebase:firebase-database:20.0.3'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.3'
     implementation 'com.google.android.gms:play-services-ads-lite:20.5.0'
     implementation 'com.google.android.gms:play-services-ads:20.5.0'
+    implementation 'com.google.firebase:firebase-storage-ktx'
 
     //gson
     implementation 'com.google.code.gson:gson:2.8.8'
